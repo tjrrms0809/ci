@@ -38,6 +38,54 @@
             $this->load->view('module/content.php');
         }
 
+        // 뷰에데이터를 전달하기
+        public function transmission()
+        {
+            // 뷰를 로드하면서 보내줄 데이터들 연관배열로
+            $datas= array("name"=>"SAM", "msg"=>"Hello codeIgniter");
+
+
+            // views/trans/first.php를 load하면서 데이터를 전달
+            $this->load->view('trans/first', $datas);   
+        }
+
+        // 뷰를 로딩하여 화면에 보여주는 것이 아니라 문자열로 리턴해주기
+        public function returnView()
+        {
+            // 세번째 파라미터 : 문자열로 리턴할지 여부
+            $str= $this->load->view('intro_view', '', true);
+            echo "로딩한 뷰의 문자열 데이터 : " . $str;
+        }
+
+        // 이제 데이터를 관리하는 Model문서에 대해서.....
+        // aplication/models/Member.php를 만들어서 모델 문서 제작
+        public function members()
+        {
+            // application/models/Member.php문서 로드하기
+            $this->load->model('Member');
+
+            // 위에서 로딩을 하면 이 컨트롤러 클래스의 객체(Intro)의
+            // 멤버변수로 Member라는 클래스객체 참조변수가 생김
+            $name= $this->Member->getName();
+            $msg= $this->Member->getMessage();
+
+            // echo " $name, $msg ";
+
+            // 뷰 문서로 이쁘게 보여주기
+            $datas= array();
+            $datas['name']= $name;
+            $datas['msg']= $msg;
+
+            // 뷰문서로 이쁘게 보여주기위해 데이터를 전달
+            $this->load->view('member/member_view', $datas);
+
+            // 참고 //
+            // 모델 로딩하면 자동으로 Controller클래스의 멤버변수가 만들어짐
+            // 이때, 기본 변수명은 Model class의 클래스명과 같음
+            // 이 이름을 별명으로 변경할 수 있음
+            $this->load->model('Member', 'aaa');
+            $this->load->getName();
+        }
     }
 
 ?>

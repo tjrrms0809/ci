@@ -38,54 +38,87 @@
             $this->load->view('module/content.php');
         }
 
-        // 뷰에데이터를 전달하기
-        public function transmission()
-        {
-            // 뷰를 로드하면서 보내줄 데이터들 연관배열로
-            $datas= array("name"=>"SAM", "msg"=>"Hello codeIgniter");
+        // 뷰에 데이터를 전달하기
+        public function transmission(){
 
+            //뷰를 로드하면서 보내줄 데이터들 연관배열로
+            $datas= array("name"=>"SAM", "msg"=>"Hello CodeIgniter");
 
-            // views/trans/first.php를 load하면서 데이터를 전달
-            $this->load->view('trans/first', $datas);   
+            //views/trans/first.php를 load하면서 데이터를 전달
+            $this->load->view('trans/first', $datas);
         }
 
-        // 뷰를 로딩하여 화면에 보여주는 것이 아니라 문자열로 리턴해주기
-        public function returnView()
-        {
-            // 세번째 파라미터 : 문자열로 리턴할지 여부
+        //뷰를 로딩하여 화면에 보여주는 것이 아니라 문자열로 리턴해주기
+        public function returnView(){
+            //세번째 파라미터 : 문자열로 리턴할지 여부
             $str= $this->load->view('intro_view', '', true);
             echo "로딩한 뷰의 문자열 데이터 : " . $str;
         }
 
-        // 이제 데이터를 관리하는 Model문서에 대해서.....
-        // aplication/models/Member.php를 만들어서 모델 문서 제작
-        public function members()
-        {
-            // application/models/Member.php문서 로드하기
+        // 이제 데이터를 관리하는 Model문서에 대해서.......
+        // application/models/Member.php를 만들어서 모델 문서 제작
+        public function members(){
+
+            //application/models/Member.php문서 로드하기
             $this->load->model('Member');
 
-            // 위에서 로딩을 하면 이 컨트롤러 클래스의 객체(Intro)의
-            // 멤버변수로 Member라는 클래스객체 참조변수가 생김
+            //위에서 로딩을 하면 이 컨트롤러 클래스의 객체(Intro)의
+            //멤버변수로 Member라는 클래스객체 참조변수가 생김
             $name= $this->Member->getName();
             $msg= $this->Member->getMessage();
+            // echo "$name , $msg";
 
-            // echo " $name, $msg ";
-
-            // 뷰 문서로 이쁘게 보여주기
+            //뷰에 전달할 연관배열
             $datas= array();
             $datas['name']= $name;
             $datas['msg']= $msg;
 
-            // 뷰문서로 이쁘게 보여주기위해 데이터를 전달
+            //뷰 문서로 이쁘게 보여주기위해 데이터를 전달
             $this->load->view('member/member_view', $datas);
 
-            // 참고 //
-            // 모델 로딩하면 자동으로 Controller클래스의 멤버변수가 만들어짐
-            // 이때, 기본 변수명은 Model class의 클래스명과 같음
-            // 이 이름을 별명으로 변경할 수 있음
-            $this->load->model('Member', 'aaa');
-            $this->load->getName();
+            //참고 ///
+            //모델 로딩하면 자동으로 Controller클래스의 멤버변수가 만들어짐
+            //이때, 기본 변수명은 Model class의 클래스명과 같음
+            //이 이름을 별병으로 변경할 수 있음
+            // $this->load->model('kkk/Member', 'aaa');
+            // $this->aaa->getName();
+
         }
+
+        //CI 데이터베이스 사용하기
+        public function database(){
+            //모델 문서의 데이터를 데이터베이스에서 읽어오기
+            //그 작업은 모델문서에서 작업
+
+            $this->load->model('board/BoardDB');
+
+            $rows= $this->BoardDB->getBoards();
+            foreach($rows as $row){
+                echo $row['num'].", ".$row['name'].", ".$row['msg']."<hr>";
+            }
+
+            //이쁘게 하기 위해 뷰문서를 이용
+            $datas['rows']= $rows; //뷰문서에 보낼 데이터
+            $this->load->view('board/board_view', $datas);
+
+
+        }
+
+        //DB에 값 입력하는 메소드
+        public function insertBoard(){
+            $name= $_POST['name'];
+            $msg= $_POST['msg'];
+
+            $this->load->model('board/BoardDB');
+            $this->BoardDB->insertRecord($name, $msg);
+
+            //리스트를 보여주는 화면 로딩하는 메소드 실행
+            $this->database();
+
+        }
+
     }
+
+
 
 ?>
